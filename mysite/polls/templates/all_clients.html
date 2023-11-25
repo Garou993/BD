@@ -1,0 +1,10 @@
+{% include "header.html" %}
+{% if client_list %}
+    <ul>
+    {% for client in client_list %}
+        <li>{{ client.full_name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No clients are available.</p>
+{% endif %}

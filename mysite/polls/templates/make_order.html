@@ -1,0 +1,40 @@
+
+<div class="container">
+    {% include "header.html" %}
+    <h1>Make order with item</h1>
+
+    {% if items %}
+    <ul>
+        {% for item in items %}
+        <li>
+            {{item.name}}
+            {{item.price}}
+            {{item.rating}}
+            {{item.params}}
+            {{item.amount}}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No items</p>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{orders_form.as_p}}
+
+        {% if error %}
+            {{error}}
+        {% endif %}
+        <input type="submit"></input>
+    </form>
+
+    {% if item %}
+        {{item.name}}
+        {{item.price}}
+        {{item.rating}}
+        {{item.params}}
+        {{item.amount}}
+        <p> added to order</p>
+    {% endif %}
+</div>

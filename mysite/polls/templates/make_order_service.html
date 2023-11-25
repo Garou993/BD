@@ -1,0 +1,36 @@
+
+<div class="container">
+    {% include "header.html" %}
+    <h1>Make order with services</h1>
+
+    {% if masters %}
+    <ul>
+        {% for master in masters %}
+        <li>
+            {{master.name}}
+            {{master.master_id}}
+            {{master.rating}}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No masters available</p>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{make_orders_services_form.as_p}}
+
+        {% if error %}
+            {{error}}
+        {% endif %}
+        <input type="submit"></input>
+    </form>
+
+    {% if master %}
+        {{master.name}}
+        {{master.master_id}}
+        {{master.rating}}
+        <p> master added to order</p>
+    {% endif %}
+</div>

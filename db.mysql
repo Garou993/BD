@@ -1,0 +1,2 @@
+SELECT FROM items WHERE items.item_name == name
+    SELECT FROM (items Right JOIN type) 
