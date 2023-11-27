@@ -42,7 +42,7 @@ def check_cookie(request):
 
 def all_clients(request):
     client_list = Client.objects.raw("SELECT * FROM Client")
-    template = loader.get_template("all_clients.html")
+    template = loader.get_template("html/all_clients.html")
     context = {
         "client_list": client_list,
     }
@@ -66,7 +66,7 @@ def register_client(request):
     if request.method == "POST":
 
         form = register_form(request.POST)
-        template = loader.get_template("client_register.html")
+        template = loader.get_template("html/client_register.html")
 
         if form.is_valid():
             
@@ -113,7 +113,7 @@ def register_client(request):
             return response
 
     form = register_form()
-    template = loader.get_template("client_register.html")
+    template = loader.get_template("html/client_register.html")
     context = {
         "register_form": form,
     }
@@ -138,7 +138,7 @@ def login(request):
                 try:
                     logins = Login.objects.get(client_login=form.cleaned_data['login'])
                 except: 
-                    template = loader.get_template("login.html")
+                    template = loader.get_template("html/login.html")
                     context = {"login_form": form, 'error': f"wrong login"}
                     return HttpResponse(template.render(context, request))
                 
@@ -148,13 +148,13 @@ def login(request):
                     response.set_cookie('cookie_password', logins.client_password)
                     return response
                 
-                template = loader.get_template("login.html")
+                template = loader.get_template("html/login.html")
                 context = {"login_form": form, 'error': f"wrong password"}
                 return HttpResponse(template.render(context, request))
                 
             
 
-        template = loader.get_template("login.html")
+        template = loader.get_template("html/login.html")
         context = {"login_form": login_form()}
         return HttpResponse(template.render(context, request))
 
@@ -171,7 +171,7 @@ def change_password(request):
             try:
                 logins = Login.objects.get(client_login=form.cleaned_data['login'])
             except: 
-                template = loader.get_template("change_password.html")
+                template = loader.get_template("html/change_password.html")
                 context = {"change_password_form": form, 'error': f"wrong login"}
                 return HttpResponse(template.render(context, request))
             
@@ -186,18 +186,18 @@ def change_password(request):
 
                 logins.client_password = form.cleaned_data['new_password']
                 logins.save()
-                template = loader.get_template("change_password.html")
+                template = loader.get_template("html/change_password.html")
                 context = {
                     'client': Client.objects.get(client_id=logins.client_id),
                     'status': "password changed"
                 }
                 return HttpResponse(template.render(context, request))
                
-            template = loader.get_template("change_password.html")
+            template = loader.get_template("html/change_password.html")
             context = {"change_password_form": form, 'error': f"wrong password"}
             return HttpResponse(template.render(context, request))
         
-    template = loader.get_template("change_password.html")
+    template = loader.get_template("html/change_password.html")
     context = {"change_password_form": change_password_form()}
     return HttpResponse(template.render(context, request))
 
@@ -252,7 +252,7 @@ def make_order_item(request):
                 item.amount -= 1
                 item.save()
 
-                template = loader.get_template("make_order.html")
+                template = loader.get_template("html/make_order.html")
                 print(item_write)
                 context = {
                             "items": item_write,
@@ -261,7 +261,7 @@ def make_order_item(request):
                         }
                 return HttpResponse(template.render(context, request))
                 
-    template = loader.get_template("make_order.html")
+    template = loader.get_template("html/make_order.html")
     context = {"items": item_write, "orders_form": orders_form()} 
     return HttpResponse(template.render(context, request))
 
@@ -274,7 +274,6 @@ def logout(request):
     return response
 
 def profile(request):
-    logged = True
     try:
         client_login = request.COOKIES.get('cookie_login')
     except:
@@ -287,7 +286,7 @@ def profile(request):
         response = HttpResponseRedirect('../login/')
         return response
 
-    template = loader.get_template("profile.html")
+    template = loader.get_template("html/profile.html")
     context = {
         'client': Client.objects.get(client_id=logins.client_id),
     }
@@ -365,7 +364,7 @@ def make_orders_service(request):
                 master_status.time = dt.datetime.utcnow()
                 master_status.save()
 
-                template = loader.get_template("make_order_service.html")
+                template = loader.get_template("html/make_order_service.html")
                 context = {
                             "masters": master_write,
                             "make_orders_services_form": form,
@@ -373,7 +372,7 @@ def make_orders_service(request):
                         }
                 return HttpResponse(template.render(context, request))
                 
-    template = loader.get_template("make_order_service.html")
+    template = loader.get_template("html/make_order_service.html")
     context = {"masters": master_write, "make_orders_services_form": make_orders_services_form()} 
     return HttpResponse(template.render(context, request))
 

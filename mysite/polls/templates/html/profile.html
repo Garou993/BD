@@ -1,0 +1,77 @@
+
+<head>
+    <style>
+        a{
+            font-family: normal;
+            color:black;
+            text-decoration: none;
+            font-size:large;
+            margin-bottom: 5px;
+            display: block;
+        }
+        button{
+            color: black;
+            background-color:white;
+            display: block;
+            margin-bottom: 5px;
+        }
+        ol.a{
+            list-style-type: none;
+        }
+        li{
+            font-family: normal;
+            color:black;
+            text-decoration: none;
+            font-size:large;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+    {% include "html/header.html" %}
+    <ol class="a">
+    <li>
+        <b>Name </b>{{client.full_name}}
+    </li>
+    <li>
+        <b>Phone </b>{{client.phone_number}}
+    </li>
+    <li>
+        <b>Email </b>{{client.client_email}}
+    </li>
+    <li>
+        <b>Address </b>{{client.address}}
+    </li>
+    
+    </ol>
+        <button>
+            <a href = "../make_order_item">
+                    Make order with item
+            </a>
+        </button>
+    </div>
+
+
+    <div>
+        <button>
+            <a href="../make_order_service">
+                Make order with services
+            </a>
+        </button>
+
+    <button>
+        <a href="../logout">
+            logout
+        </a>
+    </button>
+    <button>
+        <a href="../admin">
+            Admin log
+        </a>
+    </button>
+
+    </div>
+</body>

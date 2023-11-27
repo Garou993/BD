@@ -26,5 +26,5 @@ urlpatterns = [
     path("make_order_item/", include("polls.urls.make_order_urls")),
     path("logout/", include ("polls.urls.logout_urls")),
     path("profile/", include("polls.urls.profile_urls")),
-    path("make_order_service/", include("polls.urls.make_order_service_urls")),
+    path("make_order_service/", include("polls.urls.make_order_service_urls")),    
 ]
