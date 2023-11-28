@@ -377,13 +377,28 @@ def make_orders_service(request):
     return HttpResponse(template.render(context, request))
 
 
-# def header(request):
-#     try:
-#         login = request.COOKIES.get('cookie_login')
-#         password = request.COOKIES.get('cookie_password')
-        
-#         context = {'logged': True}
-#     except:
-#         context = {'logged': False}
-#     template = loader.get_template("header.html")
-#     return HttpResponse(template.render(context, request))
+def my_orders(request):
+
+    try:
+        client_login = request.COOKIES.get('cookie_login')
+    except:
+        response = HttpResponseRedirect('../login/')
+        return response
+    
+    client = Client.objects.get(client_id=Login.objects.get(client_login=client_login).client_id)
+
+    item_orders = []
+    service_orders = []
+    for order in Orders.objects.all():
+        if order.client_id == client.client_id:
+            if order.item_name != None:
+                item_orders.append(order)
+            else:
+                service_orders.append(order)
+
+    template = loader.get_template("html/my_orders.html")
+    context = {
+        "item_orders": item_orders,
+        "service_orders": service_orders
+        }
+    return HttpResponse(template.render(context, request))
