@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 import configparser 
-db_conf = Path(r'C:\Users\Владислав\OneDrive\Рабочий стол\djangoproj\BD\my.cnf')
+db_conf = Path(r'F:\BD\my.cnf')
 conf = configparser.ConfigParser()
 conf.read(db_conf)
 
