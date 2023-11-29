@@ -30,6 +30,17 @@ class CleanerStatus(models.Model):
         managed = False
         db_table = 'cleaner_status'
 
+class ItemsForOrder(models.Model):
+    id = models.IntegerField(primary_key=True)
+    item_name = models.CharField(max_length=255, null=False)
+    order = models.ForeignKey(
+        "Orders", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        managed = False
+        db_table = 'items_for_order'
+
 
 class Client(models.Model):
     client_id = models.IntegerField(primary_key=True)
@@ -283,7 +294,6 @@ class Orders(models.Model):
     client = models.ForeignKey(Client, models.DO_NOTHING)
     services_type = models.IntegerField()
     client_address = models.CharField(max_length=128)
-    item_name = models.CharField(max_length=20, null=True)
     delivery_type = models.IntegerField()
     master_id = models.IntegerField()
 

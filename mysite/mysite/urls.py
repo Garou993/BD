@@ -23,9 +23,12 @@ urlpatterns = [
     path("register/", include ("polls.urls.register_urls")),
     path("login/", include ("polls.urls.login_urls")),
     path("change_password/", include("polls.urls.change_password_urls")),
-    path("make_order_item/", include("polls.urls.make_order_urls")),
+    path("create_order/", include("polls.urls.create_order")),
     path("logout/", include ("polls.urls.logout_urls")),
     path("profile/", include("polls.urls.profile_urls")),
     path("make_order_service/", include("polls.urls.make_order_service_urls")),    
-    path("my_orders/", include("polls.urls.my_orders_urls"))
+    path("my_orders/", include("polls.urls.my_orders_urls")),
+    path("add_to_order/", include("polls.urls.add_to_order")),
+    path("get_order/", include("polls.urls.get_order")),
+    path("delete_order/", include("polls.urls.delete_order")),
 ]

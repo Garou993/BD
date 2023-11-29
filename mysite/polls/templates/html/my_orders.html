@@ -20,12 +20,29 @@
 <body>
     {% include "html/header.html" %}
 
+    <button>
+        <a href = "../create_order">
+                Create order
+        </a>
+    </button>
+    <button>
+        <a href="../add_to_order">Add item to order</a>
+    </button>
+    <button>
+        <a href="../delete_order">Delete order</a>
+    </button>
+    <button>
+        <a href="../get_order">Get order info</a>
+    </button>
+
     <p>Item Orders:</p>
     {% if item_orders %}
         <ul>
         {%  for order in item_orders %}
             <li>Order time: {{order.order_datetime}}</li>
             <li>Item name: {{order.item_name}}</li>
+            <li>Order id is: {{order.id_order}}</li>
+            
 
             {%if order.order_status == 0 %}
                 <p>Order in progress</p>
@@ -33,8 +50,7 @@
                 <p>Order in delivery</p>
             {%else%}
                 <p>Order in deliveried</p>
-            {% endif %}
-
+            {% endif %}   
             <button>
                 <a>Leave Comment</a>
             </button>

@@ -1,0 +1,49 @@
+<head>
+    <style>
+        a{
+            font-family: normal;
+            color:black;
+            text-decoration: none;
+            font-size:large;
+            margin-bottom: 5px;
+            display: block;
+        }
+        button{
+            color: black;
+            background-color:white;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<div class="container">
+    {% include "html/header.html" %}
+
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{get_order_content_from.as_p}}
+
+        {% if error %}
+            {{error}}
+        {% endif %}
+        <input type="submit"></input>
+    </form>
+    
+    {% if order %}
+    <a> Order info</a>
+        <li>Order id is: {{order.id_order}}</li>
+        <li>Order sum is: {{order.order_sum}}</li>
+        <li>Order status is:{{order.order_status}}</li>
+        <li>Order service type is:{{order.services_type}}</li>
+        <li>Order delivery type is:{{order.delivery_type}}</li>
+        <li>Order client's Address is:{{order.client_address}}</li> 
+    {% endif %}
+
+    <button>
+        <a href="../my_orders">
+            My orders
+        </a>
+    </button>
+
+</div>
