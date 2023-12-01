@@ -33,9 +33,7 @@ class CleanerStatus(models.Model):
 class ItemsForOrder(models.Model):
     id = models.IntegerField(primary_key=True)
     item_name = models.CharField(max_length=255, null=False)
-    order = models.ForeignKey(
-        "Orders", on_delete=models.CASCADE
-    )
+    id_order = models.ForeignKey('Orders', models.DO_NOTHING, db_column='id_order')
 
     class Meta:
         managed = False
@@ -304,7 +302,7 @@ class Orders(models.Model):
 
 class PcBuilder(models.Model):
     master_id = models.IntegerField(primary_key=True)
-    rating = models.IntegerField(blank=True, null=True)
+    rating = models.FloatField(blank=True, null=True)
     service = models.ForeignKey('Services', models.DO_NOTHING, blank=True, null=True)
     name = models.CharField(max_length=255, null=False)
     time = models.DateTimeField(null=False)

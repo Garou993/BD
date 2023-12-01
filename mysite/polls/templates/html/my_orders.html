@@ -21,14 +21,6 @@
     {% include "html/header.html" %}
 
     <button>
-        <a href = "../create_order">
-                Create order
-        </a>
-    </button>
-    <button>
-        <a href="../add_to_order">Add item to order</a>
-    </button>
-    <button>
         <a href="../delete_order">Delete order</a>
     </button>
     <button>
@@ -51,9 +43,6 @@
             {%else%}
                 <p>Order in deliveried</p>
             {% endif %}   
-            <button>
-                <a>Leave Comment</a>
-            </button>
 
             <hr>
         {% endfor %}
@@ -76,7 +65,7 @@
             {% endif %}
 
             <button>
-                <a>Leave Comment</a>
+                <a href = "../leave_master_comment?id_order={{order.id_order|urlencode}}">Leave Comment</a>
             </button>
 
             <hr>

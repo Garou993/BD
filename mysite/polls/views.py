@@ -24,6 +24,7 @@ from .models import (
     BuilderStatus,
     MasterStatus,
     ItemsForOrder,
+    ClientCommentMaster
 )
 
 item_types = {
@@ -212,11 +213,23 @@ def change_password(request):
 
 
 class create_order_form(forms.Form):
+    choices = ()
+    for type in item_types:
+        for item_name in sorted(item_types[type].objects.all()):
+            choices = (*choices, (item_name.name, item_name.name))
+
+    items = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices = choices, required=True)
     delivery_type_choices = ((1, "courier"), (2, "pick-up-point"))
     delivery_type = forms.ChoiceField(choices=delivery_type_choices, required=True)
 
 
 def create_order(request):
+    item_write = []
+
+    for type in item_types:
+        for item_name in sorted(item_types[type].objects.all()):
+            item_write.append(item_name)
+
     if request.method == "POST":
         form = create_order_form(request.POST)
         if form.is_valid():
@@ -244,69 +257,35 @@ def create_order(request):
                 delivery_type=form.cleaned_data["delivery_type"],
             )
             order.save()
+            
+            for it in form.cleaned_data["items"]:
+                items = Items.objects.get(item_name=it)
+                item = item_types[items.type].objects.get(name=it)
+                if item.amount != 0:
+                    try:
+                        max_id = ItemsForOrder.objects.order_by("-id")[0].id
+                    except:
+                        max_id = 0
+                        
+                    item_for_order = ItemsForOrder(
+                        id=max_id + 1,
+                        item_name=it,
+                        id_order = order
+                    )
+                    item.amount -= 1
+                    item.save()
+
+                    order.order_sum += item.price
+                    order.save()
+                    item_for_order.save()
 
             template = loader.get_template("html/create_order.html")
-            context = {"create_order": form, "id": max_id}
+            context = {"create_order": form, "id": order.id_order}
             return HttpResponse(template.render(context, request))
 
     template = loader.get_template("html/create_order.html")
     context = {"create_order": create_order_form()}  # "items": item_write,
     return HttpResponse(template.render(context, request))
-
-
-class add_to_order_from(forms.Form):
-    order_id = forms.IntegerField(required=True)
-    item_name = forms.CharField(max_length=255, required=True)
-
-
-def add_to_order(request):
-    item_write = []
-
-    for type in item_types:
-        for item_name in sorted(item_types[type].objects.all()):
-            item_write.append(item_name)
-
-    if request.method == "POST":
-        form = add_to_order_from(request.POST)
-        if form.is_valid():
-            items = Items.objects.get(item_name=form.cleaned_data["item_name"])
-            item = item_types[items.type].objects.get(
-                name=form.cleaned_data["item_name"]
-            )
-            if item.amount != 0:
-                try:
-                    max_id = ItemsForOrder.objects.order_by("-id")[0].id
-                except:
-                    max_id = 0
-                try:
-                    order = Orders.objects.get(id_order=form.cleaned_data["order_id"])
-                except:
-                    response = HttpResponseRedirect("../add_to_order")
-                    return response
-                item_for_order = ItemsForOrder(
-                    id=max_id + 1,
-                    item_name=form.cleaned_data["item_name"],
-                )
-                item.amount -= 1
-                item.save()
-
-                order.order_sum += item.price
-                item_for_order.order = order
-                item_for_order.save()
-
-                template = loader.get_template("html/add_to_order.html")
-                context = {"items": item_write, "add_to_order": form, "item": item}
-                return HttpResponse(template.render(context, request))
-            response = HttpResponseRedirect("../add_to_order")
-            return response
-
-    template = loader.get_template("html/add_to_order.html")
-    context = {
-        "add_to_order": add_to_order_from(),
-        "items": item_write,
-    }  # "items": item_write,
-    return HttpResponse(template.render(context, request))
-
 
 def logout(request):
     logged = False
@@ -358,12 +337,9 @@ def make_orders_service(request):
     master_write = []
 
     for type in master_types:
-        for master in sorted(master_types[type].objects.all()):
+        for master in master_types[type].objects.all():
             print(master.master_id)
-            if (
-                master_status_type[type].objects.get(master_id=master.master_id).status
-                == 0
-            ):
+            if master_status_type[type].objects.get(master_id=master.master_id).status == 0:
                 master_write.append(master)
 
     if request.method == "POST":
@@ -399,7 +375,6 @@ def make_orders_service(request):
                     order_status=0,  # 0 - обрабатывается, 1 - доставлеяется, 2 - доставлен
                     client_id=client_id,
                     client_address=client_address,
-                    item_name=None,
                     delivery_type=None,
                     services_type=form.cleaned_data["services_type"],
                     master_id=master.master_id,
@@ -427,12 +402,16 @@ def make_orders_service(request):
     return HttpResponse(template.render(context, request))
 
 
+
 def my_orders(request):
     try:
         client_login = request.COOKIES.get("cookie_login")
     except:
         response = HttpResponseRedirect("../login/")
         return response
+
+    if request.method == "POST":
+        pass
 
     client = Client.objects.get(
         client_id=Login.objects.get(client_login=client_login).client_id
@@ -518,3 +497,46 @@ def delete_order(request):
     template = loader.get_template("html/delete_order.html")
     context = {"delete_order_form": delete_order_form()}
     return HttpResponse(template.render(context, request))
+
+
+class comment_master_form(forms.Form):
+    marks = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
+    rating = forms.ChoiceField(choices=marks, required=True)
+    comment = forms.CharField(required=True)
+
+
+def leave_master_comment(request):
+    id_order = request.GET.get('id_order')
+    print(id_order)
+
+    if request.method == "POST":
+        form = comment_master_form(request.POST)
+        if form.is_valid():
+
+            order = Orders.objects.get(id_order=id_order)
+            type = order.services_type
+            master = master_types[str(type)].objects.get(master_id=order.master_id)
+
+            master.rating = (master.rating + int(form.cleaned_data["rating"]))/2
+            master.save()
+
+            try:
+                max_id = ClientCommentMaster.objects.order_by("-client_comment_id")[0].client_comment_id
+            except:
+                max_id = 0
+
+            com = ClientCommentMaster(
+                client_comment_id = max_id + 1,
+                rating = form.cleaned_data["rating"],
+                comment = form.cleaned_data["comment"],
+                id_order = order
+            )
+            com.save()
+
+            template = loader.get_template("html/leave_master_comment.html")
+            context = {'done': "Comment left"}
+            return HttpResponse(template.render(context, request))  
+
+    template = loader.get_template("html/leave_master_comment.html")
+    context = {"comment_master_form": comment_master_form()}
+    return HttpResponse(template.render(context, request))  
