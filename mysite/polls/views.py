@@ -216,7 +216,7 @@ class create_order_form(forms.Form):
     choices = ()
     for type in item_types:
         for item_name in sorted(item_types[type].objects.all()):
-            choices = (*choices, (item_name.name, item_name.name))
+            choices = (*choices, (item_name.name, item_name))
 
     items = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices = choices, required=True)
     delivery_type_choices = ((1, "courier"), (2, "pick-up-point"))

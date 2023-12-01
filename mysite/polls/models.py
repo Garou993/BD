@@ -129,9 +129,9 @@ class Flash(models.Model):
     amount = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=20, blank=True, null=True)
 
-    # def __str__(self) -> str:
-    #     return f"params are: {self.params}, price is: {self.price}, rating is {self.rating}, amount is: {self.amount}" + \
-    #             + f""
+    
+    def __str__(self) -> str:
+        return f"{self.name} Cost:{self.price} Rating: {self.rating} Amount: {self.amount}"
 
     class Meta:
         managed = False
@@ -147,7 +147,7 @@ class Hdd(models.Model):
     name = models.CharField(max_length=20, blank=True, null=True)
     
     def __str__(self) -> str:
-        return f"{self.name}"
+        return f"{self.name} Cost:{self.price} Rating: {self.rating} Amount: {self.amount}"
 
     class Meta:
         managed = False
