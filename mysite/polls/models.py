@@ -128,6 +128,7 @@ class Flash(models.Model):
     rating = models.FloatField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=20, blank=True, null=True)
+    type = models.CharField(max_length=20, blank=True, null=True)
 
     
     def __str__(self) -> str:
@@ -145,6 +146,7 @@ class Hdd(models.Model):
     rating = models.FloatField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=20, blank=True, null=True)
+    type = models.CharField(max_length=20, blank=True, null=True)
     
     def __str__(self) -> str:
         return f"{self.name} Cost:{self.price} Rating: {self.rating} Amount: {self.amount}"

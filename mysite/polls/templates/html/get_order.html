@@ -18,17 +18,6 @@
 </head>
 <div class="container">
     {% include "html/header.html" %}
-
-
-    <form action="" method="post">
-        {% csrf_token %}
-        {{get_order_content_from.as_p}}
-
-        {% if error %}
-            {{error}}
-        {% endif %}
-        <input type="submit"></input>
-    </form>
     
     {% if order %}
     <a> Order info</a>
@@ -38,6 +27,16 @@
         <li>Order service type is:{{order.services_type}}</li>
         <li>Order delivery type is:{{order.delivery_type}}</li>
         <li>Order client's Address is:{{order.client_address}}</li> 
+        <br>
+        {% if items %}
+            <li>Order items:</li>
+            {% for item in items %}
+                <p>{{item}}</p>
+                <button>
+                    <a href = "../leave_item_comment?item_name={{item.name|urlencode}}&id_order={{order.id_order|urlencode}}">Leave Comment</a>
+                </button>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 
     <button>

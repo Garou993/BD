@@ -23,9 +23,6 @@
     <button>
         <a href="../delete_order">Delete order</a>
     </button>
-    <button>
-        <a href="../get_order">Get order info</a>
-    </button>
 
     <p>Item Orders:</p>
     {% if item_orders %}
@@ -43,6 +40,10 @@
             {%else%}
                 <p>Order in deliveried</p>
             {% endif %}   
+            
+            <button>
+                <a href="../get_order?id_order={{order.id_order|urlencode}}">Get order</a>
+            </button>
 
             <hr>
         {% endfor %}

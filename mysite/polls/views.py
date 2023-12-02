@@ -24,7 +24,8 @@ from .models import (
     BuilderStatus,
     MasterStatus,
     ItemsForOrder,
-    ClientCommentMaster
+    ClientCommentMaster,
+    ClientCommentDevices
 )
 
 item_types = {
@@ -432,34 +433,31 @@ def my_orders(request):
     return HttpResponse(template.render(context, request))
 
 
-class get_order_content_from(forms.Form):
-    id_order = forms.IntegerField()
-
-
 def get_order(request):
-    if request.method == "POST":
-        form = get_order_content_from(request.POST)
-        if form.is_valid():
-            try:
-                client_login = request.COOKIES.get("cookie_login")
-            except:
-                response = HttpResponseRedirect("../login/")
-                return response
+    
+    id_order = request.GET.get('id_order')
+    print(id_order)
+    try:
+        client_login = request.COOKIES.get("cookie_login")
+    except:
+        response = HttpResponseRedirect("../login/")
+        return response
 
-            client = Client.objects.get(
-                client_id=Login.objects.get(client_login=client_login).client_id
-            )
-            try:
-                order = Orders.objects.get(id_order=form.cleaned_data["id_order"])
-            except:
-                response = HttpResponseRedirect("../get_order")
-                return response
-            template = loader.get_template("html/get_order.html")
-            context = {"order": order}
-            return HttpResponse(template.render(context, request))
-
+    try:
+        order = Orders.objects.get(id_order=id_order)
+    except:
+        response = HttpResponseRedirect("../get_order")
+        return response
+    
+    its = []
+    itemss = ItemsForOrder.objects.all()
+    for it in itemss:
+        if it.id_order == order:
+            i = Items.objects.get(item_name=it.item_name)
+            ii = item_types[i.type].objects.get(name=it.item_name)
+            its.append(ii)
     template = loader.get_template("html/get_order.html")
-    context = {"get_order_content_from": get_order_content_from()}
+    context = {"order": order, "items": its}
     return HttpResponse(template.render(context, request))
 
 
@@ -539,4 +537,47 @@ def leave_master_comment(request):
 
     template = loader.get_template("html/leave_master_comment.html")
     context = {"comment_master_form": comment_master_form()}
+    return HttpResponse(template.render(context, request))  
+
+class comment_item_form(forms.Form):
+    marks = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5))
+    rating = forms.ChoiceField(choices=marks, required=True)
+    comment = forms.CharField(required=True)
+
+
+def leave_item_comment(request):
+    item_name = request.GET.get('item_name')
+    id_order = request.GET.get('id_order')
+
+    items = Items.objects.get(item_name=item_name)
+    item = item_types[items.type].objects.get(name=item_name)
+
+    if request.method == "POST":
+        form = comment_item_form(request.POST)
+        if form.is_valid():
+
+            item.rating = (item.rating + int(form.cleaned_data["rating"]))/2
+            item.save()
+
+            try:
+                max_id = ClientCommentDevices.objects.order_by("-client_comment_id")[0].client_comment_id
+            except:
+                max_id = 0
+
+            com = ClientCommentDevices(
+                comment_id = max_id + 1,
+                item_rating = form.cleaned_data["rating"],
+                comment_text = form.cleaned_data["comment"],
+                datetime_comment = dt.datetime.utcnow(),
+                id_order = Orders.objects.get(id_order=id_order)
+            )
+            com.save()
+
+            template = loader.get_template("html/leave_master_comment.html")
+            context = {'done': "Comment left"}
+            return HttpResponse(template.render(context, request))  
+
+
+    template = loader.get_template("html/leave_item_comment.html")
+    context = {"comment_item_form": comment_item_form(), "item": item}
     return HttpResponse(template.render(context, request))  
