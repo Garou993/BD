@@ -31,5 +31,8 @@ urlpatterns = [
     path("get_order/", include("polls.urls.get_order")),
     path("delete_order/", include("polls.urls.delete_order")),
     path("leave_master_comment/", include("polls.urls.leave_master_comment_urls")),
-    path("leave_item_comment/", include("polls.urls.leave_item_comment_urls"))
+    path("leave_item_comment/", include("polls.urls.leave_item_comment_urls")),
+    path("tech_supp/", include("polls.urls.tech_supp")),
+    path("show_question/", include("polls.urls.show_question")),
+    path("leave_comment_courier/", include("polls.urls.leave_comment_courier"))
 ]

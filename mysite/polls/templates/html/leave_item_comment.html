@@ -1,32 +1,20 @@
 <head>
-    <style>
-        a{
-            font-family: normal;
-            color:black;
-            text-decoration: none;
-            font-size:large;
-            margin-bottom: 5px;
-            display: block;
-        }
-        button{
-            color: black;
-            background-color:white;
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
+    
 </head>
 
 <body>
-    
+    <div>
     {% include "html/header.html" %}
 
-    <h2>Leave Comment for item {{item.name}}</h2>
+    <h2>Оставьте комментарий для предмета {{item.name}}</h2>
 
     <form action="" method="post">
         {% csrf_token %}
         {% if comment_item_form %}
-            {{ comment_item_form.as_p }}
+            Оценка: {{ comment_item_form.rating }}
+            <br>
+            Комментарий: {{ comment_item_form.comment }}
+            <br>
         {% endif %}
         <input type="submit"></input>
     </form>
@@ -34,4 +22,10 @@
     {% if done %}
         {{done}}
     {% endif %}
+    <button>
+        <a href="../my_orders">
+            Мои заказы
+        </a>
+    </button>
+</div>
 </body>

@@ -1,32 +1,34 @@
-<head>
-    
-</head>
-
 <body>
     <div>
     {% include "html/header.html" %}
 
-    <h2>Оставить комментарий для мастера</h2>
+    <h2>Оставьте комментарий для курьера {{item.name}}</h2>
 
     <form action="" method="post">
         {% csrf_token %}
-        {% if comment_master_form %}
-            Оценка: {{ comment_master_form.rating}}
+        {% if leave_comment_courier %}
+            Оценка: {{ leave_comment_courier.rating }}
             <br>
-            Комментарий: {{ comment_master_form.comment}}
+            Комментарий: {{ leave_comment_courier.text }}
             <br>
         {% endif %}
+
+        {%if status%}
+            {{status}}
+        {%endif%}
+        <br>
+
         <input type="submit"></input>
     </form>
 
     {% if done %}
         {{done}}
     {% endif %}
-
+    <br>
     <button>
         <a href="../my_orders">
             Мои заказы
         </a>
     </button>
-    </div>
+</div>
 </body>

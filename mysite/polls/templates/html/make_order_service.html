@@ -1,42 +1,103 @@
 <head>
-    <style>
-        a{
-            font-family: normal;
-            color:black;
-            text-decoration: none;
-            font-size:large;
-            margin-bottom: 5px;
-            display: block;
-        }
-        button{
-            color: black;
-            background-color:white;
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
+    
 </head>
 <div class="container">
     {% include "html/header.html" %}
-    <h1>Make order with services</h1>
+    <h1>Сделать заказ услуг</h1>
+    
+    <button>
+        <a href="../make_order_service?service_type={{1|urlencode}}&builderstatus={{0|urlencode}}">
+            Сборщик
+        </a>
+    </button>
+    <button>
+        <a href="../make_order_service?service_type={{2|urlencode}}&masterstatus={{0|urlencode}}">
+            Мастер
+        </a>
+    </button>
+    <button>
+        <a href="../make_order_service?service_type={{3|urlencode}}&cleanerstatus={{0|urlencode}}">
+            Чистка
+        </a>
+    </button>
+    
+    {%if master_type == '1'%}
 
-    {% if masters %}
-    <ul>
-        {% for master in masters %}
+        <p>Сборщики</p>
+        
+        <br>
+        <p>Найти:</p>
+        <form method="get">
+            <p>Номер мастера: {{ builderFilter.form.master_id }}</p>
+            <p>Имя мастера: {{ builderFilter.form.master_name }}</p>
+            <p>Рейтинг мастера больше: {{ builderFilter.form.rating_gt }}</p>
+            <p>Рейтинг мастера меньше: {{ builderFilter.form.rating_lt }}</p>
+            <p hidden>Занятость: {{ builderFilter.form.builderstatus }}</p>
+            <p hidden>Тип сервиса: {{ builderFilter.form.service_type }}</p>
+            <input type="submit">
+        </form>
+
+        {% for obj in builderFilter.qs %}
         <li>
-            {{master.name}}
-            {{master.master_id}}
-            {{master.rating}}
+            Номер мастера {{obj.master_id}} |||
+            Имя мастера {{obj.name}}  ||| 
+            Рейтинг мастера {{obj.rating}} |||
+              
         </li>
         {% endfor %}
-    </ul>
-    {% else %}
-        <p>No masters available</p>
-    {% endif %}
 
+    {%elif master_type == '2'%}
+        <p>Мастер</p>
+
+        <br>
+        <p>Найти:</p>
+        <form method="get">
+            <p>Номер мастера: {{ masterFilter.form.master_id }}</p>
+            <p>Имя мастера: {{ masterFilter.form.master_name }}</p>
+            <p>Рейтинг мастера больше: {{ masterFilter.form.rating_gt }}</p>
+            <p>Рейтинг мастера меньше: {{ masterFilter.form.rating_lt }}</p>
+            <p hidden>Занятость: {{ masterFilter.form.masterstatus }}</p>
+            <p hidden>Тип сервиса: {{ masterFilter.form.service_type }}</p>
+            <input type="submit">
+        </form>
+
+        {% for obj in masterFilter.qs %}
+        <li>
+            Номер мастера {{obj.master_id}} |||
+            Имя мастера {{obj.name}}  ||| 
+            Рейтинг мастера {{obj.rating}} |||  
+        </li>
+        {% endfor %}
+    {%elif master_type == '3'%}
+        <p>Чистка</p>
+
+        <br>
+        <p>Найти:</p>
+        <form method="get">
+            <p>Номер мастера: {{ cleanerFilter.form.master_id }}</p>
+            <p>Имя мастера: {{ cleanerFilter.form.master_name }}</p>
+            <p>Рейтинг мастера больше: {{ cleanerFilter.form.rating_gt }}</p>
+            <p>Рейтинг мастера меньше: {{ cleanerFilter.form.rating_lt }}</p>
+            <p hidden>Занятость: {{ cleanerFilter.form.cleanerstatus }}</p>
+            <p hidden>Тип сервиса: {{ cleanerFilter.form.service_type }}</p>
+            <input type="submit">
+        </form>
+
+        {% for obj in cleanerFilter.qs %}
+        <li>
+            Номер мастера {{obj.master_id}} |||
+            Имя мастера {{obj.name}}  ||| 
+            Рейтинг мастера {{obj.rating}} |||  
+        </li>
+        {% endfor %}
+    {%endif%}
+
+    <br>
+    <p>Заказать</p>
     <form action="" method="post">
         {% csrf_token %}
-        {{make_orders_services_form.as_p}}
+        Номер мастера{{make_orders_services_form.masters_id}}
+        <br>
 
         {% if error %}
             {{error}}
@@ -48,6 +109,6 @@
         {{master.name}}
         {{master.master_id}}
         {{master.rating}}
-        <p> master added to order</p>
+        <p> Мастер добавлен в заказ</p>
     {% endif %}
 </div>

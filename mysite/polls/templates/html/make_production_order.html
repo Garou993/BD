@@ -1,0 +1,25 @@
+<body>
+    
+    {% include "html/header.html" %}
+
+    <h2>Сделать заказ у производства</h2>
+
+    <p>Производства:</p>
+    {% for industry in industries%}
+        <button>
+            <a href="../make_production_order?industry_id={{industry.industry_id|urlencode}}">{{industry.industry_name}}</a>
+        </button>
+
+        
+        
+    {% endfor %}
+
+    {% if formSet %}
+        {% for form in formSet %}
+            {{form.title.value}}
+            {{ form.amount}}
+            <br>
+        {% endfor %}
+    {% endif %}
+
+</body>

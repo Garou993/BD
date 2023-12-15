@@ -1,76 +1,80 @@
 <head>
-    <style>
-        a{
-            font-family: normal;
-            color:black;
-            text-decoration: none;
-            font-size:large;
-            margin-bottom: 5px;
-            display: block;
-        }
-        button{
-            color: black;
-            background-color:white;
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
 </head>
 
 <body>
     {% include "html/header.html" %}
+    <div>
 
-    <button>
-        <a href="../delete_order">Delete order</a>
-    </button>
+    <p> Поиск: </p>
+    <!-- <form action="" method="post">
+        {% csrf_token %}
+        {{SearchFormItems.as_p}}
+        <input type="submit"></input>
+    </form> -->
 
-    <p>Item Orders:</p>
-    {% if item_orders %}
-        <ul>
-        {%  for order in item_orders %}
-            <li>Order time: {{order.order_datetime}}</li>
-            <li>Item name: {{order.item_name}}</li>
-            <li>Order id is: {{order.id_order}}</li>
+    <form method="get">
+        <p>Номер заказа: {{ filter.form.id_order }}</p>
+        <p>Сумма заказа больше: {{ filter.form.order_sum__gt }}</p>
+        <p>Сумма заказа меньше: {{ filter.form.order_sum__lt }}</p>
+        <p>Дата заказа больше: {{ filter.form.order_datetime__gt }}</p>
+        <p>Дата заказа меньше: {{ filter.form.order_datetime__lt }}</p>
+        <input type="submit" />
+    </form>
+    <h3>Заказы предметов:</h3>
+    {% for obj in filter.qs %}
+        {% if obj.services_type == Null%}
+            <li>Дата заказа: {{obj.order_datetime}}</li>
+            <li>Номер заказа: {{obj.id_order}}</li>
+            <li>Сумма заказа: {{obj.order_sum}}</li>
             
 
             {%if order.order_status == 0 %}
-                <p>Order in progress</p>
-            {% elif order.order_status == 1 %}
-                <p>Order in delivery</p>
+                <p>Заказ обрабатывается</p>
+            {% elif obj.order_status == 1 %}
+                <p>Заказ в пути</p>
             {%else%}
-                <p>Order in deliveried</p>
+                <p>Доставлен</p>
             {% endif %}   
             
             <button>
-                <a href="../get_order?id_order={{order.id_order|urlencode}}">Get order</a>
+                <a href="../get_order?id_order={{obj.id_order|urlencode}}">Информация</a>
             </button>
-
-            <hr>
-        {% endfor %}
-        </ul>
-    {% endif %}
-
-    <p>Service Orders:</p>
-    {% if service_orders %}
-        <ul>
-        {%  for order in service_orders %}
-            <li>Order time: {{order.order_datetime}}</li>
-            <li>Master id: {{order.master_id}}</li>
             
-            {%if order.order_status == 0 %}
-                <p>Order in progress</p>
-            {% elif order.order_status == 1 %}
-                <p>Master on the way</p>
+            <button>
+                <a href="../delete_order?id_order={{obj.id_order|urlencode}}">Удалить заказ</a>
+            </button>
+            <hr>
+        {%endif%}
+    {% endfor %}
+
+    <h3>Заказы услуг:</h3>
+    {% for obj in filter.qs %}
+        {% if obj.services_type != Null%}
+            <li>Дата заказа: {{obj.order_datetime}}</li>
+            <li>Номер заказа: {{obj.id_order}}</li>
+            <li>Номер мастера: {{obj.master_id}}</li>
+            <li>Сумма заказа: {{obj.order_sum}}</li>
+            <li>Тип услуги: {{ obj.services_type }}</li>
+            
+            {%if obj.order_status == 0 %}
+                <p>Заказ обрабатывается</p>
+            {% elif obj.order_status == 1 %}
+                <p>Мастер в пути</p>
             {%else%}
-                <p>Order in done</p>
+                <p>Заказ выполнен</p>
             {% endif %}
 
             <button>
-                <a href = "../leave_master_comment?id_order={{order.id_order|urlencode}}">Leave Comment</a>
+                <a href = "../leave_master_comment?id_order={{obj.id_order|urlencode}}">Оставить комментарий</a>
+            </button>
+
+            <button>
+                <a href="../delete_order?id_order={{obj.id_order|urlencode}}">Удалить заказ</a>
             </button>
 
             <hr>
-        {% endfor %}
-        </ul>
-    {% endif %}
+        {%endif%}
+    {% endfor %}
+
+    </div>
 </body>

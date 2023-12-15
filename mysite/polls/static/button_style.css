@@ -1,0 +1,40 @@
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid #2ecc71; /* Green border */
+    border-radius: 5px;
+    color: #fff;
+    background-color: #2ecc71; /* Green background */
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Hover effect */
+  button:hover {
+    background-color: #fff;
+    color: #2ecc71; /* Green text on hover */
+  }
+  
+  /* Different style for a secondary button */
+  .button-secondary {
+    border-color: #3498db; /* Blue border */
+    background-color: #3498db; /* Blue background */
+  }
+  
+  .button-secondary:hover {
+    background-color: #fff;
+    color: #3498db; /* Blue text on hover */
+  }
+  
+  /* Disable the button style */
+  button:disabled {
+    background-color: #95a5a6; /* Gray background for disabled button */
+    border-color: #95a5a6; /* Gray border for disabled button */
+    color: #ecf0f1; /* Light text for disabled button */
+    cursor: not-allowed;
+  }
+  

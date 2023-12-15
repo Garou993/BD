@@ -1,43 +1,51 @@
 <head>
-    <style>
-        a{
-            font-family: normal;
-            color:black;
-            text-decoration: none;
-            font-size:large;
-            margin-bottom: 5px;
-            display: block;
-        }
-        button{
-            color: black;
-            background-color:white;
-            display: block;
-            margin-bottom: 5px;
-        }
-    </style>
+    
 </head>
 <div class="container">
     {% include "html/header.html" %}
-    <h1>Make order with item</h1>
+    <h1>Сделать заказ предмета</h1>
+
+        <form method="get">
+            <p>Имя предмета: {{filter.form.item_name}}</p>
+            <input type="submit">
+        </form>
+
+        {% for obj in filter.qs %}
+            <li>Имя предмета: {{obj.item_name}}</li>
+            
+        {% endfor %}
+
     <form action="" method="post">
         {% csrf_token %}
-        {{create_order.as_p}}
+        Наименования товаров: {{create_order.items}}
+        <br>
+        Тип доставки: {{create_order.delivery_type}}
+        <br>
+        Пункты выдачи заказа: {{create_order.pick_up_points}}
 
         {% if error %}
             {{error}}
         {% endif %}
         {% if id %}
-            {{id}}
-            <p>Order created</p>
+            <p>Номер заказа {{id}}</p>
+            <p>Заказ создан</p>
             <br>
         {% endif %}
+        {%if status %}
+            {{status}}
+        {%endif%}
+        <br>
         <input type="submit"></input>
     </form>
+    
 
     <button>
         <a href="../my_orders">
-            My orders
+            Мои заказы
         </a>
     </button>
+    <br>
+
+    
 
 </div>

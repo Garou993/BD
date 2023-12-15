@@ -1,0 +1,37 @@
+<div class="container">
+    {% include "html/header.html" %}
+    <h1>Техническая поддержка</h1>
+    <a>Пожалуйста, напишите ваш вопрос в форму ниже</a>
+    <br> 
+
+    
+
+    <form action="" method="post">
+        {% csrf_token %}
+        Введите вопрос: {{tech_supp_form.text}}
+        <br> 
+        {% if status %}
+            {{status}}
+        {% endif %}
+        <br> 
+        
+        <input type="submit"></input>
+    </form>
+
+    {% if history%}
+        {% for obj in history %}
+            <li>Номер запроса: {{obj.support_id}}</li>
+            <li>Дата запроса: {{obj.datetime_tech_supp}}</li>
+            
+            <button>
+                <a href="../show_question?support_id={{obj.support_id|urlencode}}">Информация</a>
+            </button>
+
+            <!-- <button>
+                <a href="../">Информация</a>
+            </button> -->
+            <hr>
+        {%endfor%}
+    {%endif%}
+
+</div>
